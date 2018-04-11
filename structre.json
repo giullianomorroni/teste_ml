@@ -1,0 +1,18 @@
+{
+  "crop": "potato",
+  "variety": "atlantic",
+  "field_name": "Potato litle corner",
+  "planting_date": "30/05/2018",
+  "analisys_date": "30/05/2018",
+  "pmid": "2222",
+  "yara_code": "33333",
+  "recommendation": [
+    {
+      "element": "CA",
+      "product": "YaraVita HYDROPHOS",
+      "product_liters_per_hectare": "5",
+      "water_liters_per_hectare": "200",
+      "suggestion": "2 repeat applications at 10 to 14 day intervals. Continue to monitor crop with petiole analysis."
+    }
+  ]
+}
