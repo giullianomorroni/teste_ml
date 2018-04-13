@@ -2,6 +2,6 @@ pandas
 numpy
 scipy
 sklearn
-bottle∑
+bottle
 psycopg2
 xlrd
