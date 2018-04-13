@@ -32,6 +32,9 @@ class InFieldDecisionTree:
             sample_type = json_lab_analyses["SAMPLETYPE"]
             crop_name = PotatoPlantingDate.season_by_planting_date(planting_date, crop, variety)
 
+            if crop_name is None:
+                return
+
             if sample_type.lower() == 'soil':
                 self.elements = elements.soil(json_lab_analyses)
             elif sample_type.lower() == 'leaf':

@@ -5,22 +5,18 @@
 import os
 import psycopg2
 import json
+from django.conf import settings
 
 
 class DatabaseRepository:
 
     def __init__(self):
-        #TODO PASSAR ESSAS VARIAVEIS PRO SERVICO DA AZURE
-        os.environ['DATABASE_HOST'] = 'infield-dev.postgres.database.azure.com'
-        os.environ['DATABASE_NAME'] = 'infield_dev'
-        os.environ['DATABASE_USER'] = 'infield_dev@infield-dev.postgres.database.azure.com'
-        os.environ['DATABASE_PASSWORD'] = 'tHkNgTss6BAysE5r'
-
+        databases = settings.DATABASES['default']
         self.conn_string = "host='{0}' dbname='{1}' user='{2}' password='{3}'".format(
-            os.environ['DATABASE_HOST'],
-            os.environ['DATABASE_NAME'],
-            os.environ['DATABASE_USER'],
-            os.environ['DATABASE_PASSWORD']
+            databases['HOST'],
+            databases['NAME'],
+            databases['USER'],
+            databases['PASSWORD']
         )
         self.connection = None
 
