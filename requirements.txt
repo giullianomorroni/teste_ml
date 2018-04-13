@@ -1,7 +1,0 @@
-pandas
-numpy
-scipy
-sklearn
-bottle
-psycopg2
-xlrd
