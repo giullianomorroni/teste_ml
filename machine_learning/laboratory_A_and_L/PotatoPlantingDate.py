@@ -85,6 +85,15 @@ potatos = [
     ('POTATO', 'SNOWDEN', '361', '100-109'),
     ('POTATO', 'SNOWDEN', '370', '110-139'),
     ('POTATO', 'SNOWDEN', '379', '140-999'),
+
+    ('POTATO', 'GENERIC', '244', '0-59'),
+    ('POTATO', 'GENERIC', '277', '70-79'),
+    ('POTATO', 'GENERIC', '255', '60-69'),
+    ('POTATO', 'GENERIC', '274', '80-89'),
+    ('POTATO', 'GENERIC', '298', '90-99'),
+    ('POTATO', 'GENERIC', '297', '100-109'),
+    ('POTATO', 'GENERIC', '313', '110-139'),
+    ('POTATO', 'GENERIC', '287', '140-999'),
 ]
 
 

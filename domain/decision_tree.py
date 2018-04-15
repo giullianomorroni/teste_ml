@@ -51,15 +51,13 @@ class InFieldDecisionTree:
                     quantity = self.elements[element]
                     element_encoded = element_le.transform([element])
                     crop_name_encoded = crop_le.transform([crop_name])
-                    predict = clf.predict([[quantity, element_encoded[0], crop_name_encoded[0]]])
+                    predict = clf.predict([[element_encoded[0], crop_name_encoded[0], quantity]])
 
                     values = predict[0].split('#')
+
                     level = values[0]
                     comments = values[1]
                     product = values[2]
-                    if len(product) == 0:
-                        continue
-
                     product_liters_per_hectare = values[3]
                     water_liters_per_hectare = values[4]
                     suggestion = values[5]

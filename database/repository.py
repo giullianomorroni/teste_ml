@@ -5,24 +5,28 @@
 import os
 import psycopg2
 import json
-from django.conf import settings
 
 
 class DatabaseRepository:
 
     def __init__(self):
-        databases = settings.DATABASES['default']
+        # TODO PASSAR ESSAS VARIAVEIS PRO SERVICO DA AZURE
+        os.environ['DATABASE_HOST'] = 'infield-dev.postgres.database.azure.com'
+        os.environ['DATABASE_NAME'] = 'infield_dev'
+        os.environ['DATABASE_USER'] = 'infield_dev@infield-dev.postgres.database.azure.com'
+        os.environ['DATABASE_PASSWORD'] = 'tHkNgTss6BAysE5r'
+
         self.conn_string = "host='{0}' dbname='{1}' user='{2}' password='{3}'".format(
-            databases['HOST'],
-            databases['NAME'],
-            databases['USER'],
-            databases['PASSWORD']
+            os.environ['DATABASE_HOST'],
+            os.environ['DATABASE_NAME'],
+            os.environ['DATABASE_USER'],
+            os.environ['DATABASE_PASSWORD']
         )
         self.connection = None
 
     def database_connect(self):
         try:
-            print("Connecting to database\n {0}".format(self.conn_string))
+            #print("Connecting to database\n {0}".format(self.conn_string))
             # get a connection, if a connect cannot be made an exception will be raised here
             self.connection = psycopg2.connect(self.conn_string)
         except Exception as e:

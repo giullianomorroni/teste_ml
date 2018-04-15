@@ -13,13 +13,25 @@ from sklearn.externals import joblib
 class PotatoDecisionTree:
 
     interactions = 23
-    file_name = 'machine_learning/laboratory_A_and_L/data/TestePotatoDecisionTree_Complete.csv'
+    file_name = 'machine_learning/laboratory_A_and_L/data/PotatoDecisionTree_Complete.csv'
+
+    column_names = ['ELEMENT_ENCODED', 'CROP_NAME_ENCODED', 'QUANTITY']
+
     QUANTITIES = [('VERY_LOW', 'VERY_LOW_COMMENTS', 'VL'),
                   ('LOW', 'LOW_COMMENTS', 'L'),
                   ('SLIGHTLY_LOW', 'SLIGHTLY_LOW_COMMENTS', 'SL'),
                   ('NORMAL', 'NORMAL_COMMENTS', 'N'),
                   ('HIGH', 'HIGH_COMMENTS', 'H'),
                   ('VERY_HIGH', 'VERY_HIGH_COMMENTS', 'VH')]
+
+    NEXT_QUANTITIES = {
+        'VERY_LOW': 'LOW',
+        'LOW': 'SLIGHTLY_LOW',
+        'SLIGHTLY_LOW': 'NORMAL',
+        'NORMAL': 'HIGH',
+        'HIGH': 'VERY_HIGH',
+        'VERY_HIGH': ''
+    }
 
     def __init__(self):
         self.df_train = None
@@ -31,27 +43,36 @@ class PotatoDecisionTree:
     def pre_process(self):
         self.df_train['ELEMENT'] = self.df_train['ELEMENT'].apply(str.strip)
         self.df_train['CROP_NAME'] = self.df_train['CROP_NAME'].apply(str.strip)
+
         target = []
         features = []
+
         for index, row in self.df_train.iterrows():
-            new_row = pd.Series(row)
             for quantity in self.QUANTITIES:
-                has_comments = new_row[quantity[1]].split('#')
-                if len(has_comments[1]) == 0:
-                    continue
-                value = new_row[quantity[0]]
+                value = row[quantity[0]]
                 value = float(value.replace(',', '.'))
+
+                if quantity[0] == 'VERY_HIGH':
+                    max_value = value + 999
+                else:
+                    max_value = row[self.NEXT_QUANTITIES[quantity[0]]]
+                    max_value = float(max_value.replace(',', '.'))
+
                 if np.isnan(value):
                     continue
-                for _ in range(0, self.interactions):
-                    value = float(value - 0.005)
-                    new_row['QUANTITY'] = value
-                    new_row['ORIGINAL_QUANTITY'] = new_row[quantity[0]]
-                    new_row['QUANTITY_TYPE'] = quantity[0]
-                    features.append(new_row)
 
-                    #TODO essa me.. ..udeu
-                    target.append(quantity[2] + '#' + new_row[quantity[1]])
+                for _ in range(0, self.interactions):
+                    copy_row = pd.Series(row).copy();
+                    copy_row['QUANTITY'] = value
+                    copy_row['ORIGINAL_QUANTITY'] = copy_row[quantity[0]]
+                    copy_row['QUANTITY_TYPE'] = quantity[0]
+
+                    features.append(copy_row)
+                    target.append(quantity[2] + '#' + copy_row[quantity[1]])
+
+                    value = float(value + 0.005)
+                    if value >= max_value:
+                        break
 
         self.X = pd.DataFrame(data=features)
         self.y = pd.DataFrame(data=target, columns=['COMMENTS'])
@@ -77,13 +98,20 @@ class PotatoDecisionTree:
         print('X_test', len(X_test))
         print('Data split, train size has {0} and test size has {1}'.format(len(X_train), len(X_test)))
 
-        column_names = ['QUANTITY', 'ELEMENT_ENCODED', 'CROP_NAME_ENCODED']
-
         clf = DecisionTreeClassifier(criterion='gini', max_depth=None, max_features=3, random_state=42)
-        clf.fit(X_train[column_names], y_train)
-        score = clf.score(X_train[column_names], y_train)
+        clf.fit(X_train[self.column_names], y_train)
+
+        '''
+        for index, row in X_test.iterrows():
+            predict = clf.predict([row[self.column_names]])
+            print(predict)
+            print(row[['ELEMENT', 'QUANTITY_TYPE', 'QUANTITY']])
+            print('\n')
+        '''
+        score = clf.score(X_train[self.column_names], y_train)
         print('SEU SCORE PARA BASE DE TREINO FOI DE {0:.4f}'.format(float(score)))
-        score = clf.score(X_test[column_names], y_test)
+
+        score = clf.score(X_test[self.column_names], y_test)
         print('SEU SCORE PARA BASE DE TESTE FOI DE {0:.4f}'.format(float(score)))
 
         print('PERSISTINDO MODELO TREINADO, PARA FUTURO REUSO')

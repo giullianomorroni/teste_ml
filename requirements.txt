@@ -1,1 +1,8 @@
+django
 pandas
+numpy
+scipy
+sklearn
+bottle
+psycopg2-binary
+xlrd
