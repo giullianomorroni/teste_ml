@@ -12,9 +12,8 @@ from sklearn.externals import joblib
 
 class PotatoDecisionTree:
 
-
-    interactions = 2
-    file_name = 'machine_learning/laboratory_A_and_L/data/TestePotatoDecisionTree_Complete.csv'
+    interactions = 27
+    file_name = 'machine_learning/laboratory_A_and_L/data/PotatoDecisionTree_Complete.csv'
 
     column_names = ['ELEMENT_ENCODED', 'CROP_NAME_ENCODED', 'QUANTITY']
 
