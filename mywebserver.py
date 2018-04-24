@@ -6,7 +6,7 @@
 from bottle import route, run
 from machine_learning.laboratory_A_and_L import PotatoDecisionTree
 import threading
-from domain.decision_tree import InFieldDecisionTree
+from service.Service import InFieldDecisionTreeService
 
 
 @route('/build_models', method='POST')
@@ -29,8 +29,8 @@ def builder():
 
 
 def do_analyses(id_field_analyses):
-    idt = InFieldDecisionTree()
-    idt.process_analyses(id_field_analyses)
+    idt = InFieldDecisionTreeService()
+    idt.classify(id_field_analyses)
 
 
 run(host='0.0.0.0', port=8000, debug=True)

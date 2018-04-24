@@ -44,9 +44,9 @@ class DatabaseRepository:
         try:
             cursor = self.connection.cursor()
             insert_statement = 'insert into recommendation_analyses ' \
-                               '(id_field_analyses, recommendation_analyses, model_version, model_name) ' \
+                               '(id_field_analyses, recommendation_analyses, decision_tree_version, decision_tree_name) ' \
                                'values (%s, %s, %s, %s)'
-            cursor.execute(insert_statement, (id_field_analyses, json.dumps({"recommendation": recommendations}),
+            cursor.execute(insert_statement, (id_field_analyses, json.dumps(recommendations),
                                               model_version, model_name))
             self.connection.commit()
             cursor.close()
