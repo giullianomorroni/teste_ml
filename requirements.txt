@@ -7,3 +7,4 @@ bottle
 psycopg2-binary
 xlrd
 xlsxwriter
+requests

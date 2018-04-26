@@ -1,22 +1,41 @@
 
 import pandas as pd
-from machine_learning.laboratory_A_and_L import PotatoCropCode
-from sklearn.externals import joblib
-from domain import elements as domain_element
-from datetime import datetime
+from domain.decision_tree import InFieldDecisionTree
+import json
 
-sample_type = crop_info["sample_type"]
+files = [
+    'base_test_potato_norland.xlsx',
+    'base_test_potato_onaway.xlsx',
+    'base_test_potato_shepody.xlsx'
+]
 
-excel = pd.read_excel('../machine_learning/laboratory_A_and_L/data/base_teste_18_000_rows.xlsx')
+for file in files:
+    excel = pd.read_excel('../machine_learning/laboratory_A_and_L/data/test_files/{0}'.format(file))
+    print('reading file {0}'.format(file))
 
-# Create a Pandas dataframe from some data.
-df = pd.DataFrame(data=values, columns=keys)
+    recommendations = []
+    recommendations_per_element = []
 
-# Create a Pandas Excel writer using XlsxWriter as the engine.
-writer = pd.ExcelWriter('final_result.xlsx', engine='xlsxwriter')
+    for idx in range(0, len(excel)):
+        records = json.loads(excel.loc[idx].to_json(orient='columns'))
+        analyses = InFieldDecisionTree().process_analyses(records)
 
-# Convert the dataframe to an XlsxWriter Excel object.
-df.to_excel(writer, sheet_name='Sheet1')
+        for idx2, value in enumerate(analyses['recommendations']):
+            analyses['recommendations'][idx2]['crop_name'] = records['CROPNAME']
+            analyses['recommendations'][idx2]['crop_code'] = records['CROPCODE']
 
-# Close the Pandas Excel writer and output the Excel file.
-writer.save()
+        aux = [x for x in analyses['recommendations']]
+        recommendations.extend(aux)
+        recommendations_per_element.extend([list(x.values()) for x in recommendations])
+
+    # Create a Pandas dataframe from some data.
+    df = pd.DataFrame(data=recommendations_per_element, columns=recommendations[0].keys())
+
+    # Create a Pandas Excel writer using XlsxWriter as the engine.
+    writer = pd.ExcelWriter('final_result_{0}.xlsx'.format(file.split('.')[0]), engine='xlsxwriter')
+
+    # Convert the dataframe to an XlsxWriter Excel object.
+    df.to_excel(writer, sheet_name='Sheet1')
+
+    # Close the Pandas Excel writer and output the Excel file.
+    writer.save()

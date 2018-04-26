@@ -12,10 +12,10 @@ from sklearn.externals import joblib
 
 class PotatoDecisionTree:
 
-    interactions = 27
+    interactions = 500
     file_name = 'machine_learning/laboratory_A_and_L/data/PotatoDecisionTree_Complete.xlsx'
 
-    column_names = ['ELEMENT_ENCODED', 'CROP_NAME_ENCODED', 'QUANTITY']
+    column_names = ['ELEMENT_ENCODED', 'QUANTITY', 'CROP_NAME_ENCODED']
 
     QUANTITIES = [
         ('VERY_LOW', 'VERY_LOW_COMMENTS', 'VL'),
@@ -45,6 +45,7 @@ class PotatoDecisionTree:
         features = []
 
         for index, row in self.df_train.iterrows():
+            print(row[['CROP_NAME', 'ELEMENT']])
             for quantity in self.QUANTITIES:
                 try:
                     value = row[quantity[0]]
@@ -52,12 +53,14 @@ class PotatoDecisionTree:
                         continue
 
                     if quantity[0] == 'HIGH':
-                        max_value = value + 10
+                        max_value = value + 1
                     else:
                         max_value = row[self.NEXT_QUANTITIES[quantity[0]]]
+                        if np.isnan(max_value):
+                            max_value = value + 1
 
-                    for _ in range(0, self.interactions):
-                        copy_row = pd.Series(row).copy();
+                    for i in range(0, 2):
+                        copy_row = pd.Series(row).copy()
                         copy_row['QUANTITY'] = value
                         copy_row['ORIGINAL_QUANTITY'] = copy_row[quantity[0]]
                         copy_row['QUANTITY_TYPE'] = quantity[0]
@@ -67,9 +70,7 @@ class PotatoDecisionTree:
                         target.append(target_value)
                         features.append(copy_row)
 
-                        value = float(value + 0.005)
-                        if value >= max_value:
-                            break
+                        value = max_value - 0.01
                 except Exception as e:
                     print(row)
                     print(e)
@@ -91,21 +92,11 @@ class PotatoDecisionTree:
         self.pre_process()
         self.train_encode_labels()
 
-        X_train, X_test, y_train, y_test = train_test_split(self.X, self.y, test_size=0.25, random_state=42)
+        clf = DecisionTreeClassifier(criterion='gini', max_depth=None, max_features=1, random_state=42)
+        clf.fit(self.X[self.column_names], self.y)
 
-        print('df_train', len(self.df_train))
-        print('X_train', len(X_train))
-        print('X_test', len(X_test))
-        print('Data split, train size has {0} and test size has {1}'.format(len(X_train), len(X_test)))
-
-        clf = DecisionTreeClassifier(criterion='gini', max_depth=None, max_features=3, random_state=42)
-        clf.fit(X_train[self.column_names], y_train)
-
-        score = clf.score(X_train[self.column_names], y_train)
+        score = clf.score(self.X[self.column_names], self.y)
         print('SEU SCORE PARA BASE DE TREINO FOI DE {0:.4f}'.format(float(score)))
-
-        score = clf.score(X_test[self.column_names], y_test)
-        print('SEU SCORE PARA BASE DE TESTE FOI DE {0:.4f}'.format(float(score)))
 
         print('PERSISTINDO MODELO TREINADO, PARA FUTURO REUSO')
         joblib.dump(clf, 'machine_learning/laboratory_A_and_L/models/PotatoDecisionTree.pkl')

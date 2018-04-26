@@ -9,32 +9,36 @@ def unit_measure(element):
             'N': '%', 'P': '%', 'K': '%', 'Ca': '%', 'Mg': '%', 'S': '%', 'Mn': '%', 'Na': '%',
             'NO3N': 'PPM', 'Al': 'PPM', 'B': 'PPM', 'Cu': 'PPM', 'Fe': 'PPM', 'Zn': 'PPM'
         }
-        return data[element.upper()]
+        return data[element]
     except KeyError:
         return 'NaN'
 
 
 def soil(data):
     return {
-        "K": data["S_K"], "Mg": data["S_MG"], "Ca": data["S_CA"], "Na": data["S_NA"],
-        "S": data["S_S"], "Zn": data["S_ZN"], "Mn": data["S_MN"], "Fe": data["S_FE"],
-        "Cu": data["S_CU"], "B": data["S_B"], "Al": data["S_AL"], "NO3N": data["S_NO3N"]
+        "K": data.get("S_K"), "Mg": data.get("S_MG"), "Ca": data.get("S_CA"),
+        "Na": data.get("S_NA"), "S": data.get("S_S"), "Zn": data.get("S_ZN"),
+        "Mn": data.get("S_MN"), "Fe": data.get("S_FE"), "Cu": data.get("S_CU"),
+        "B": data.get("S_B"), "Al": data.get("S_AL"), "NO3N": data.get("S_NO3N")
     }
 
 
 def leaf(data):
     return {
-        "N": data["L_N"], "NO3N": data["L_NO3N"], "S": data["L_S"], "P": data["L_P"],
-        "K": data["L_K"], "Mg": data["L_MG"], "Ca": data["L_CA"], "Na": data["L_NA"],
-        "B": data["L_B"], "Zn": data["L_ZN"], "Mn": data["L_MN"], "Fe": data["L_FE"],
-        "Cu": data["L_CU"], "Al": data["L_AL"], "Mo": data["L_MO"], "Cl": data["L_CL"]
+        "N": data.get("L_N"), "NO3N": data.get("L_NO3N"), "S": data.get("L_S"),
+        "P": data.get("L_P"), "K": data.get("L_K"), "Mg": data.get("L_MG"),
+        "Ca": data.get("L_CA"), "Na": data.get("L_NA"), "B": data.get("L_B"),
+        "Zn": data.get("L_ZN"), "Mn": data.get("L_MN"), "Fe": data.get("L_FE"),
+        "Cu": data.get("L_CU"), "Al": data.get("L_AL"), "Mo": data.get("L_MO"),
+        "Cl": data.get("L_CL")
     }
 
 
 def fruit(data):
     return {
-        "N": data["F_N"], "NO3N": data["F_NO3N"], "S": data["F_S"], "P": data["F_P"],
-        "K": data["F_K"], "Mg": data["F_MG"], "Ca": data["F_CA"], "Na": data["F_NA"],
-        "B": data["F_B"], "Zn": data["F_ZN"], "Mn": data["F_MN"], "Fe": data["F_FE"],
-        "Cu": data["F_CU"], "Al": data["F_AL"]
+        "N": data.get("F_N"), "NO3N": data.get("F_NO3N"), "S": data.get("F_S"),
+        "P": data.get("F_P"), "K": data.get("F_K"), "Mg": data.get("F_MG"),
+        "Ca": data.get("F_CA"), "Na": data.get("F_NA"), "B": data.get("F_B"),
+        "Zn": data.get("F_ZN"), "Mn": data.get("F_MN"), "Fe": data.get("F_FE"),
+        "Cu": data.get("F_CU"), "Al": data.get("F_AL")
     }
