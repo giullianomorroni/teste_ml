@@ -7,6 +7,7 @@ from machine_learning import DecisionTreeVersion
 from database.repository import DatabaseRepository
 from domain.decision_tree import InFieldDecisionTree
 import requests
+import os
 
 
 class InFieldDecisionTreeService:
@@ -32,6 +33,9 @@ class InFieldDecisionTreeService:
 
     @staticmethod
     def send_email(emails):
+        if os.environ['IFA_ENVIRONMENT'] == 'develop':
+            return
+
         if emails is None:
             return
 

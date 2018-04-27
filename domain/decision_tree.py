@@ -15,6 +15,7 @@ class InFieldDecisionTree:
 
     def process_analyses(self, json_lab_analyses):
         crop_code = json_lab_analyses["CROPCODE"]
+        crop_code = 290
 
         crop_info = PotatoCropCode.code[crop_code]
         crop = crop_info["crop"]
@@ -24,7 +25,7 @@ class InFieldDecisionTree:
         crop_name = '{0} ({1}) ({2})'.format(crop.upper(), variety.upper(), crop_code)
 
         sample_type = crop_info["sample_type"]
-
+        sample_type = 'soil'
         if crop is None:
             return
 
@@ -35,14 +36,15 @@ class InFieldDecisionTree:
         elif sample_type.lower() == 'fruit':
             self.elements = domain_element.fruit(json_lab_analyses)
 
-        models_path = '../machine_learning/laboratory_A_and_L/models/'
+        models_path = 'machine_learning/laboratory_A_and_L/models/'
 
         clf = joblib.load('{0}PotatoDecisionTree.pkl'.format(models_path))
         element_le = joblib.load('{0}PotatoDecisionTree_ElementLabelEncode.pkl'.format(models_path))
         crop_le = joblib.load('{0}PotatoDecisionTree_CropNameLabelEncode.pkl'.format(models_path))
 
         try:
-            recommendations = []
+            elements_analyses = []
+            products = []
             for element in self.elements.keys():
                 quantity = self.elements[element]
                 if quantity is None:
@@ -55,25 +57,30 @@ class InFieldDecisionTree:
                 level = values.pop(0)
                 comments = values.pop(0)
 
-                products = []
                 for _ in values:
+                    product = values.pop(0)
+                    if len(product) == 0:
+                        continue
+                    already_contains = [x for x in products if x['product'] == product]
+                    if len(already_contains) > 0:
+                        del values[0:3]
+                        continue
                     products.append({
-                        "product": values.pop(0),
+                        "product": product,
                         "product_liters_per_hectare": values.pop(0),
                         "water_liters_per_hectare": values.pop(0),
                         "suggestion": values.pop(0)
                     })
 
-                recommendations.append(
-                    {
+                #products = list(set(products))
+                elements_analyses.append({
                         "element": element,
                         "level": level,
                         "quantity": self.elements[element],
                         "unit_measure": domain_element.unit_measure(element),
-                        "products": products
                     }
                 )
-            return {'phase_code': phase_code, 'recommendations': recommendations}
+            return {'phase_code': phase_code, 'elements_analyses': elements_analyses, 'products': products}
         except Exception as e:
             print(e)
             return {'phase_code': 0, 'recommendations': []}
