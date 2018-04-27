@@ -16,7 +16,7 @@ class InFieldDecisionTree:
     def process_analyses(self, json_lab_analyses):
         crop_code = json_lab_analyses["CROPCODE"]
 
-        crop_info = PotatoCropCode.code[crop_code]
+        crop_info = PotatoCropCode.code[int(crop_code)]
         crop = crop_info["crop"]
         phase_code = crop_info["phase_code"]
 

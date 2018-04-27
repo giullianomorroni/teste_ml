@@ -59,17 +59,8 @@ class DatabaseRepository:
             cursor = self.connection.cursor()
             cursor.execute(
                 'select '
-                '   field_analyses.id_field_analyses,'
-                '   field_analyses.id_field,'
-                '   field_analyses.id_laboratory,'
-                '   field_analyses.lab_analyses, '
-                '   varieties.name,'
-                '   crops.name, '
-                '   fields.planting_date '
+                '   field_analyses.lab_analyses '
                 'from field_analyses as field_analyses ' 
-                '   inner join fields as fields on fields.id_field = field_analyses.id_field '
-                '   inner join crops as crops on crops.id_crop = fields.id_crop '
-                '   inner join varieties as varieties on varieties.id_variety = fields.id_variety '
                 'where 1=1 '
                 '   and field_analyses.processed = false and field_analyses.id_field_analyses = {0}'
                 .format(id_field_analyses))

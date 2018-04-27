@@ -24,7 +24,7 @@ class InFieldDecisionTreeService:
         records = self.repository.retrieve_data(id_field_analyses)
 
         for record in records:
-            recommendation = InFieldDecisionTree().process_analyses(record[3])
+            recommendation = InFieldDecisionTree().process_analyses(record[0])
             self.repository.save_recommendation(id_field_analyses, recommendation, model_version, model_name)
 
         self.repository.database_disconnect()
@@ -33,7 +33,7 @@ class InFieldDecisionTreeService:
 
     @staticmethod
     def send_email(emails):
-        if os.environ['IFA_ENVIRONMENT'] == 'develop':
+        if os.environ.get('IFA_ENVIRONMENT') == 'develop':
             return
 
         if emails is None:
@@ -47,6 +47,9 @@ class InFieldDecisionTreeService:
 
     @staticmethod
     def get_recommendation_stakeholders(id_field_analyses):
+        if os.environ.get('IFA_ENVIRONMENT') == 'develop':
+            return
+
         key = 'ZL8C7rao8bsFZ1SF3wKMAzhn4R91tUaY9KMiHETKcaDWXruQWLWX/A=='
         route = 'listRecommendationStakeHolders'
         url = 'https://infield-dev.azurewebsites.net/api/mailer/{0}?code={1}'.format(route, key)
@@ -55,6 +58,9 @@ class InFieldDecisionTreeService:
             return None
 
         r_json = r.json()
+        if 'emails' not in r_json:
+            return None
+
         emails_list = r_json['emails']
         emails = ''
         for email in emails_list:
