@@ -15,7 +15,6 @@ class InFieldDecisionTree:
 
     def process_analyses(self, json_lab_analyses):
         crop_code = json_lab_analyses["CROPCODE"]
-        crop_code = 290
 
         crop_info = PotatoCropCode.code[crop_code]
         crop = crop_info["crop"]
@@ -25,7 +24,7 @@ class InFieldDecisionTree:
         crop_name = '{0} ({1}) ({2})'.format(crop.upper(), variety.upper(), crop_code)
 
         sample_type = crop_info["sample_type"]
-        sample_type = 'soil'
+
         if crop is None:
             return
 
